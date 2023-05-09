@@ -303,11 +303,11 @@ fn write_csv_using_serde(csv_record: &Vec<WriteRecord>) -> Result<(), Box<dyn Er
 /// There are bunch of ways that I could put this together, but I think that the functions should
 /// be..
 ///
-/// 1. Opens and reads file using csv crate, returns a Vec<ReadRecord>
-/// 2. Takes Vec<ReadRecord>, grids the height data into, and returns, a HashMap
-/// 3. Takes a HashMap of gridded data, computes stats for each key, which are inserted into the
-///    Hashmap, which is returned
-/// 4. Takes a HashMap, opens a new file, and serializes the HashMap to the file using the csv
+/// 1. Takes a &file_path, opens and reads file using csv crate with serde support, returns a Vec<ReadRecord>
+/// 2. Takes &Vec<ReadRecord>, grids the height data into, and returns, a HashMap<String, HeightData>
+/// 3. Takes a &HashMap<String, HeightData> of gridded data, computes stats for each key, which are collected
+///    and returned as Vec<WriteRecord>
+/// 4. Takes a &Vec<WriteRecord>, opens a new file, and serializes the HashMap to the file using the csv
 ///    crate and serde
 ///
 /// TODO: Better error handling
