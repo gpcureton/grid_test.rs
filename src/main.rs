@@ -1,5 +1,6 @@
 use std::{
     error::Error,
+    process,
 };
 use std::collections::HashMap;
 // use csv;
@@ -171,7 +172,7 @@ fn read_using_csv_serde(file_path: &String) -> Result<Vec<ReadRecord>, Box<dyn E
 /// This function accepts as input an iterator over the lines of a string, and bins the data
 /// into a 1 degree by 1 degree grid, saving the binned data in a HashMap
 fn generate_histograms(
-    csv_record: &Vec<ReadRecord>,
+    csv_record: &[ReadRecord],
 ) -> Result<HashMap<String, HeightData>, Box<dyn Error>> {
     // let mut idx = 0;
     let mut grid_dict: HashMap<String, HeightData> = HashMap::new();
@@ -224,7 +225,7 @@ struct WriteRecord {
     latitude: f64,
     counts: i32,
     sum_heights: i32,
-    sum_squared_heights: f64,
+    sum_squared_heights: i64,
     mean_height: f64,
     stdev_height: f64,
 }
@@ -256,13 +257,13 @@ fn calc_stats(grid_dict: &HashMap<String, HeightData>) -> Result<Vec<WriteRecord
         let counts = &grid_dict.get(&key).unwrap().counts.clone();
 
         let sum_heights: i32 = heights.iter().sum::<i32>();
-        let sum_squared_heights: f64 = heights
+        let sum_squared_heights: i64 = heights
             .iter()
-            .map(|x| (*x as f64) * (*x as f64))
-            .sum::<f64>();
+            .map(|x| (*x as i64) * (*x as i64))
+            .sum::<i64>();
 
         let mom_1: f64 = sum_heights as f64 / (*counts as f64);
-        let mom_2: f64 = sum_squared_heights / (*counts as f64);
+        let mom_2: f64 = sum_squared_heights as f64 / (*counts as f64);
         let cum_2: f64 = mom_2 - mom_1 * mom_1;
 
         let mean_height: f64 = mom_1;
@@ -329,7 +330,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let output_records = calc_stats(&grid_dict)?;
 
-    let _ = write_csv_using_serde(&output_records)?;
+    write_csv_using_serde(&output_records)?;
 
-    Ok(())
+    process::exit(0)
 }
