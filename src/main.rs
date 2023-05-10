@@ -181,9 +181,7 @@ fn generate_histograms(
 
     println!("Looping through the lines...");
     for (idx, record) in csv_record.iter().enumerate() {
-        if idx > MAX_RECORDS {
-            break;
-        }
+
         num_obs += 1;
 
         let longitude = record.longitude;
@@ -287,7 +285,7 @@ fn calc_stats(grid_dict: &HashMap<String, HeightData>) -> Result<Vec<WriteRecord
 /// This function accepts as input an iterator over the lines of a string, and bins the data
 /// into a 1 degree by 1 degree grid, saving the binned data in a HashMap
 fn write_csv_using_serde(csv_record: &Vec<WriteRecord>) -> Result<(), Box<dyn Error>> {
-    let path = "./data/viirs_stats-2_rs.csv";
+    let path = "./data/viirs_cloud_top_height_stats.csv";
 
     let mut wtr = csv::Writer::from_path(path)?;
 
@@ -319,7 +317,7 @@ fn write_csv_using_serde(csv_record: &Vec<WriteRecord>) -> Result<(), Box<dyn Er
 fn main() -> Result<(), Box<dyn Error>> {
     println!("GRID_SIZE = {GRID_SIZE}");
 
-    // let file_path = "/home/geoffc/Computer_Stuff/Python/ChatGPT/viirs_cloud_top_height_trunc.csv".to_string();
+    // let file_path = "/home/geoffc/Computer_Stuff/Python/ChatGPT/viirs_cloud_top_height_full.csv".to_string();
     let file_path = "./data/viirs_cloud_top_height.csv".to_string();
 
     // let result = read_using_include_str()?;
