@@ -5,7 +5,7 @@ use serde::Deserialize;
 use crate::{MAX_RECORDS, GRID_SIZE};
 
 /// The Record struct holds a single line of data read from a csv file
-#[derive(Debug, Deserialize, Clone, Copy)]
+#[derive(Debug, Deserialize, Clone, PartialEq)]
 #[serde(rename_all = "PascalCase")]
 pub struct ReadRecord {
     pub longitude: f64,
@@ -140,4 +140,34 @@ pub fn read_using_csv() -> Result<Vec<ReadRecord>, Box<dyn Error>> {
     println!("There are {:?} observations", num_obs);
 
     Ok(csv_records)
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::ReadRecord;
+
+    #[test]
+    /// This test checks that the struct attributes are the values
+    /// they were defined as.
+    fn reader_struct_test() {
+        let record = ReadRecord{
+            longitude: 100.0,
+            latitude: 35.2,
+            height: 12345};
+        assert_eq!(record.longitude, 100.0);
+        assert_eq!(record.latitude, 35.2);
+        assert_eq!(record.height, 12345);
+    }
+
+    #[test]
+    /// This test compares a struct with a clone of itself, which is possible
+    /// as the struct derives the PartialEq trait
+    fn read_struct_equality(){
+        let record_1 = ReadRecord{
+            longitude: 100.0,
+            latitude: 35.2,
+            height: 12345};
+        let record_2 = record_1.clone();
+        assert_eq!(record_1, record_2);
+    }
 }

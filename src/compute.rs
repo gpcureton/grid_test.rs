@@ -12,7 +12,7 @@ use crate::outputs::WriteRecord as WriteRecord;
 
 /// The HeightData struct holds binned observations of a gridcell
 /// Also stored is the number of observations for that gridcell
-#[derive(Clone, Debug)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct HeightData {
     counts: i32,
     heights: Vec<i32>,
@@ -64,18 +64,6 @@ pub fn generate_histograms( csv_records: &[ReadRecord],) -> Result<HashMap<Strin
 
     Ok(grid_dict)
 }
-
-// #[derive(Debug, Serialize, Clone, Copy)]
-// #[serde(rename_all = "PascalCase")]
-// pub struct WriteRecord {
-//     longitude: f64,
-//     latitude: f64,
-//     counts: i32,
-//     sum_heights: i32,
-//     sum_squared_heights: i64,
-//     mean_height: f64,
-//     stdev_height: f64,
-// }
 
 /// This function reads the contents of a HashMap, computes some statistics for each key,
 /// then writes the summary stats for the key (or grid cell) to a csv file.
@@ -137,3 +125,19 @@ pub fn calc_stats(grid_dict: &HashMap<String, HeightData>) -> Result<Vec<WriteRe
     Ok(csv_records)
 }
 
+#[cfg(test)]
+mod tests {
+    use crate::HeightData;
+
+    #[test]
+    /// This test checks that the struct attributes are the values
+    /// they were defined as.
+    fn heights_struct_test() {
+        let cell_1 = HeightData {
+            counts: 25,
+            heights: vec![1266, 12656, 5256, 735],
+        };
+        let cell_2 = cell_1.clone();
+        assert_eq!(cell_1, cell_2);
+    }
+}
