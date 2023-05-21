@@ -34,5 +34,6 @@ pub fn write_csv_using_serde(csv_records: &Vec<WriteRecord>) -> Result<(), Box<d
     println!("Finished serializing the histogram data to a csv file...");
     println!("There are {:?} entries in the csv file.\n", num_grids_cells);
 
+    // Err("There was an error writing to the CSV file")?
     Ok(())
 }

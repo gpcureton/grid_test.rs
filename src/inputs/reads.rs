@@ -1,4 +1,5 @@
 use std::error::Error;
+// use csv::DeserializeError;
 use serde::Deserialize;
 
 use crate::{MAX_RECORDS, GRID_SIZE};
@@ -17,7 +18,6 @@ pub struct ReadRecord {
 pub fn read_using_csv_serde(file_path: &String, max_records: &usize) -> Result<Vec<ReadRecord>, Box<dyn Error>> {
     println!("Reading the file using csv crate with serde deserialization...");
     println!("GRID_SIZE = {GRID_SIZE}");
-
 
     let mut num_records: i32 = 0;
     // let mut csv_records: Vec<ReadRecord> = Vec::new();
@@ -54,6 +54,7 @@ pub fn read_using_csv_serde(file_path: &String, max_records: &usize) -> Result<V
     println!("Finished deserializing the csv file...");
     println!("There are {:?} entries in the csv file.\n", num_records);
 
+    // Err("This is an error")?
     Ok(csv_records)
 }
 
