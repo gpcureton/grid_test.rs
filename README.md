@@ -9,6 +9,7 @@ A todo-list if tasks which will be tried out in this repo include:
 - [ ] Implementation of cli arg parsing using `clap` (https://crates.io/crates/clap)
 - [x] Project organization / modules
 - [ ] Logging
+- [x] Testing
 - [ ] Error reporting
 - [ ] OO-like programming
 - [ ] Reading/writing of HDF5 files (https://crates.io/crates/hdf5)
