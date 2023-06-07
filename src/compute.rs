@@ -14,8 +14,8 @@ use crate::outputs::WriteRecord as WriteRecord;
 /// Also stored is the number of observations for that gridcell
 #[derive(Debug, Clone, PartialEq)]
 pub struct HeightData {
-    counts: i32,
-    heights: Vec<i32>,
+    counts: i64,
+    heights: Vec<i64>,
 }
 
 /// This function accepts as input an iterator over the lines of a string, and bins the data
@@ -27,7 +27,7 @@ pub fn generate_histograms( csv_records: &[ReadRecord],) -> Result<HashMap<Strin
     // let mut idx = 0;
     let mut grid_dict: HashMap<String, HeightData> = HashMap::new();
 
-    let mut num_records: i32 = 0;
+    let mut num_records: i64 = 0;
 
     for (_idx, record) in csv_records.iter().enumerate() {
 
@@ -93,11 +93,11 @@ pub fn calc_stats(grid_dict: &HashMap<String, HeightData>) -> Result<Vec<WriteRe
         let heights = &grid_dict.get(&key).unwrap().heights.clone();
         let counts = &grid_dict.get(&key).unwrap().counts.clone();
 
-        let sum_heights: i32 = heights.iter().sum::<i32>();
+        let sum_heights: i64 = heights.iter().sum::<i64>();
         let sum_squared_heights: i64 = heights
             .iter()
-            .map(|x| (*x as i64) * (*x as i64))
-            .sum::<i64>();
+            .map(|x| (*x) * (*x))
+            .sum();
 
         let mom_1: f64 = sum_heights as f64 / (*counts as f64);
         let mom_2: f64 = sum_squared_heights as f64 / (*counts as f64);

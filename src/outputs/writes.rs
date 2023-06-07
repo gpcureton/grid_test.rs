@@ -6,8 +6,8 @@ use serde::Serialize;
 pub struct WriteRecord {
     pub longitude: f64,
     pub latitude: f64,
-    pub counts: i32,
-    pub sum_heights: i32,
+    pub counts: i64,
+    pub sum_heights: i64,
     pub sum_squared_heights: i64,
     pub mean_height: f64,
     pub stdev_height: f64,
@@ -20,7 +20,7 @@ pub fn write_csv_using_serde(csv_records: &Vec<WriteRecord>, out_file: &String) 
 
     let mut wtr = csv::Writer::from_path(out_file)?;
 
-    let mut num_grids_cells: i32 = 0;
+    let mut num_grids_cells: i64 = 0;
 
     for record in csv_records {
         wtr.serialize(record)?;
