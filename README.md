@@ -6,7 +6,7 @@ A todo-list if tasks which will be tried out in this repo include:
 - [x] Manipulation of HashMaps (like python dictionaries)
 - [x] Manipulation of general data arrays (like python lists/tuples)
 - [ ] Manipulation of numeric arrays (like numpy arrays) (https://crates.io/crates/ndarray, https://crates.io/crates/nalgebra)
-- [ ] Implementation of cli arg parsing using `clap` (https://crates.io/crates/clap)
+- [x] Implementation of cli arg parsing using `clap` (https://crates.io/crates/clap)
 - [x] Project organization / modules
 - [ ] Logging
 - [x] Testing
