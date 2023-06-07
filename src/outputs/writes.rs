@@ -15,12 +15,10 @@ pub struct WriteRecord {
 
 /// This function accepts as input an iterator over the lines of a string, and bins the data
 /// into a 1 degree by 1 degree grid, saving the binned data in a HashMap
-pub fn write_csv_using_serde(csv_records: &Vec<WriteRecord>) -> Result<(), Box<dyn Error>> {
-    println!("Serializing the histogram data to file...");
+pub fn write_csv_using_serde(csv_records: &Vec<WriteRecord>, out_file: &String) -> Result<(), Box<dyn Error>> {
+    println!("Serializing the histogram data to file {out_file}...");
 
-    let path = "./data/viirs_cloud_top_height_stats.csv";
-
-    let mut wtr = csv::Writer::from_path(path)?;
+    let mut wtr = csv::Writer::from_path(out_file)?;
 
     let mut num_grids_cells: i32 = 0;
 

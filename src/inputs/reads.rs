@@ -15,44 +15,54 @@ pub struct ReadRecord {
 
 /// Reads in a CSV file, using the csv crate and deserializing with serde crate.
 /// Returns Ok(Vec<ReadRecord>).
-pub fn read_using_csv_serde(file_path: &String, max_records: &usize) -> Result<Vec<ReadRecord>, Box<dyn Error>> {
-    println!("Reading the file using csv crate with serde deserialization...");
+// pub fn read_using_csv_serde(file_path: &String, max_records: &usize) -> Result<Vec<ReadRecord>, Box<dyn Error>> {
+pub fn read_using_csv_serde(files: &Vec<&String>, max_records: &usize) -> Result<Vec<ReadRecord>, Box<dyn Error>> {
     println!("GRID_SIZE = {GRID_SIZE}");
 
-    let mut num_records: i32 = 0;
     // let mut csv_records: Vec<ReadRecord> = Vec::new();
     let mut csv_records: Vec<ReadRecord> = Vec::with_capacity(MAX_RECORDS);
 
-    let mut rdr = csv::ReaderBuilder::new()
-        .has_headers(false)
-        .from_path(file_path)?;
+    for file_path in files {
+        println!("Reading the file '{file_path}' using csv crate with serde deserialization...");
 
-    for result in rdr.deserialize() {
-        let record: ReadRecord = result?;
+        let mut num_records: i64 = 0;
 
-        // if num_obs as usize > MAX_RECORDS {
-        if num_records as usize > *max_records {
-            println!("Breaking at {}", num_records);
-            break;
+        let mut rdr = csv::ReaderBuilder::new()
+            .has_headers(false)
+            .from_path(file_path)?;
+
+        for result in rdr.deserialize() {
+            let record: ReadRecord = result?;
+
+            if num_records as usize > *max_records {
+                println!("Breaking at {}", num_records);
+                break;
+            }
+            num_records += 1;
+
+            // NOTE: Is any of the following needed, are we populating "record" twice?
+
+            // let longitude = record.longitude;
+            // let latitude = record.latitude;
+            // let height = record.height;
+
+            // When the struct field names are the same as the variables they are being populated with,
+            // we can replace '"fieldname": varname' with just "varname".
+            // let record = ReadRecord {
+            //     longitude,
+            //     latitude,
+            //     height,
+            // };
+
+            csv_records.push(record);
         }
-        num_records += 1;
 
-        let longitude = record.longitude;
-        let latitude = record.latitude;
-        let height = record.height;
-
-        // When the struct field names are the same as the variables they are being populated with,
-        // we can replace '"fieldname": varname' with just "varname".
-        let record = ReadRecord {
-            longitude,
-            latitude,
-            height,
-        };
-        csv_records.push(record);
+        println!("Finished deserializing the csv file...");
+        println!("There are {:?} entries in the csv file.\n", num_records);
     }
 
-    println!("Finished deserializing the csv file...");
-    println!("There are {:?} entries in the csv file.\n", num_records);
+    println!("Finished reading the csv files...");
+    println!("There are {:?} total entries read.\n", csv_records.len());
 
     // Err("This is an error")?
     Ok(csv_records)
