@@ -14,7 +14,8 @@ use read_csv::ReadRecord as ReadRecord;
 
 // Looks for code in src/compute.rs
 pub mod compute;
-use compute::{MAX_RECORDS, GRID_SIZE};
+// use compute::{MAX_RECORDS, GRID_SIZE};
+use compute::{MAX_RECORDS};
 use compute::HeightData as HeightData;
 
 // Looks for code in src/writes.rs
@@ -29,17 +30,21 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let args = args::args()?;
 
+    // let grid_size: f64 = 1.0;
+
     let in_files: Vec<&String> = args.get_many("in_file").unwrap().collect();
     println!("{in_files:?}");
     let out_file: &String = args.get_one("out_file").unwrap();
     println!("{out_file:?}");
+    let grid_size: &f64 = args.get_one("grid_size").unwrap();
+    println!("{grid_size:?}");
 
     // // TODO: This should be a command line option
     // // let result = read_using_include_str()?;
     // // let result = read_using_csv()?;
     let csv_records: Vec<ReadRecord> = read_csv::read_using_csv_serde(&in_files, &MAX_RECORDS)?;
 
-    let grid_dict: HashMap<String, HeightData> = compute::generate_histograms(&csv_records)?;
+    let grid_dict: HashMap<String, HeightData> = compute::generate_histograms(&csv_records, &grid_size)?;
 
     let output_records: Vec<WriteRecord> = compute::calc_stats(&grid_dict)?;
 

@@ -16,4 +16,4 @@ A todo-list if tasks which will be tried out in this repo include:
 - [ ] Reading/writing of NetCDF4 files (https://crates.io/crates/netcdf)
 - [ ] General scientific computing tasks (https://crates.io/crates/peroxide)
 
-There is a lot of ground to cover, so at some point I will probably organize this repo into a series of workspaces which each touch on a specific task.
+There is a lot of ground to cover, so at some point I will probably organize this repo into a series of workspaces which each touch on a specific task. Or create some more repos.

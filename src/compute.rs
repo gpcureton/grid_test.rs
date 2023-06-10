@@ -20,8 +20,7 @@ pub struct HeightData {
 
 /// This function accepts as input an iterator over the lines of a string, and bins the data
 /// into a 1 degree by 1 degree grid, saving the binned data in a HashMap
-// pub fn generate_histograms( csv_records: &Vec<ReadRecord>,) -> Result<HashMap<String, HeightData>, Box<dyn Error>> {
-pub fn generate_histograms( csv_records: &[ReadRecord],) -> Result<HashMap<String, HeightData>, Box<dyn Error>> {
+pub fn generate_histograms( csv_records: &[ReadRecord], grid_size: &f64) -> Result<HashMap<String, HeightData>, Box<dyn Error>> {
     println!("Binning the csv records into a histogram...");
 
     // let mut idx = 0;
@@ -38,8 +37,10 @@ pub fn generate_histograms( csv_records: &[ReadRecord],) -> Result<HashMap<Strin
         let height = record.height;
 
         // Compute the grid cell coordinates for this observation
-        let lon_center = GRID_SIZE * (longitude / GRID_SIZE).floor() + GRID_SIZE / 2.0;
-        let lat_center = GRID_SIZE * (latitude / GRID_SIZE).floor() + GRID_SIZE / 2.0;
+        // let lon_center = GRID_SIZE * (longitude / GRID_SIZE).floor() + GRID_SIZE / 2.0;
+        // let lat_center = GRID_SIZE * (latitude / GRID_SIZE).floor() + GRID_SIZE / 2.0;
+        let lon_center = grid_size * (longitude / grid_size).floor() + grid_size / 2.0;
+        let lat_center = grid_size * (latitude / grid_size).floor() + grid_size / 2.0;
 
         // Here we are making a string key from the lat and lon center values.
         // We can also make a key from a struct containing these values, as long as they
@@ -93,7 +94,8 @@ pub fn calc_stats(grid_dict: &HashMap<String, HeightData>) -> Result<Vec<WriteRe
         let heights = &grid_dict.get(&key).unwrap().heights.clone();
         let counts = &grid_dict.get(&key).unwrap().counts.clone();
 
-        let sum_heights: i64 = heights.iter().sum::<i64>();
+        // let sum_heights: i64 = heights.iter().sum::<i64>();
+        let sum_heights: i64 = heights.iter().sum();
         let sum_squared_heights: i64 = heights
             .iter()
             .map(|x| (*x) * (*x))

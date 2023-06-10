@@ -2,7 +2,8 @@ use std::error::Error;
 // use csv::DeserializeError;
 use serde::Deserialize;
 
-use crate::{MAX_RECORDS, GRID_SIZE};
+// use crate::{MAX_RECORDS, GRID_SIZE};
+use crate::{MAX_RECORDS};
 
 /// The Record struct holds a single line of data read from a csv file
 #[derive(Debug, Deserialize, Clone, PartialEq)]
@@ -17,7 +18,6 @@ pub struct ReadRecord {
 /// Returns Ok(Vec<ReadRecord>).
 // pub fn read_using_csv_serde(file_path: &String, max_records: &usize) -> Result<Vec<ReadRecord>, Box<dyn Error>> {
 pub fn read_using_csv_serde(files: &Vec<&String>, max_records: &usize) -> Result<Vec<ReadRecord>, Box<dyn Error>> {
-    println!("GRID_SIZE = {GRID_SIZE}");
 
     // let mut csv_records: Vec<ReadRecord> = Vec::new();
     let mut csv_records: Vec<ReadRecord> = Vec::with_capacity(MAX_RECORDS);
