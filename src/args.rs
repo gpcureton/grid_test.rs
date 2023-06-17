@@ -11,24 +11,24 @@ use clap::{
     Command,
 };
 
-#[derive(Debug)]
-enum Algorithm {
-    IncludeStr,
-    Csv,
-    Serde
-}
+// #[derive(Debug)]
+// enum Algorithm {
+//     IncludeStr,
+//     Csv,
+//     Serde
+// }
 
-pub fn args(sys_args: &Vec<String>) -> Result<ArgMatches, Box<dyn Error>> {
-    println!("This is where we would sort out the args.");
+pub fn args(sys_args: &[String]) -> Result<ArgMatches, Box<dyn Error>> {
+    // println!("This is where we would sort out the args.");
 
-    println!("Input arguments {sys_args:?}");
+    // println!("Input arguments {sys_args:?}");
 
     // TODO: Find any instances of -x or --expert, set is_expert to true, pop out the "expert" strings, them out replace them with a single instance of
     //       --help, and pass the resulting vector to the args module.
 
     let mut is_expert = false;
 
-    let mut sys_args_list = sys_args.clone().split_off(1);
+    let mut sys_args_list = sys_args.to_owned().split_off(1);
     sys_args_list.sort_unstable();
 
     sys_args_list.dedup();
@@ -39,7 +39,7 @@ pub fn args(sys_args: &Vec<String>) -> Result<ArgMatches, Box<dyn Error>> {
 
     // if (expert_long_idx != None) || (expert_short_idx != None) {
     if (expert_long_idx.is_some()) || (expert_short_idx.is_none()) {
-        println!("We have an expert option!");
+        // println!("We have an expert option!");
         is_expert = true;
     }
 
@@ -48,13 +48,13 @@ pub fn args(sys_args: &Vec<String>) -> Result<ArgMatches, Box<dyn Error>> {
         sys_args_list.retain(|x| x != "-x" && x != "--expert");
     }
     sys_args_list.dedup();
-    println!("Input arguments sans --expert and -x : {sys_args_list:?}");
+    // println!("Input arguments sans --expert and -x : {sys_args_list:?}");
 
-    for (idx, argument) in sys_args_list.iter().enumerate() {
-        println!("Input argument {idx}: {argument}");
-    }
+    // for (idx, argument) in sys_args_list.iter().enumerate() {
+    //     println!("Input argument {idx}: {argument}");
+    // }
 
-    println!("is_expert = {is_expert}");
+    // println!("is_expert = {is_expert}");
 
     // let sys_args = sys_args_list;
 
