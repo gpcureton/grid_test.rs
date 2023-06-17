@@ -19,7 +19,7 @@ pub struct HeightData {
 }
 
 /// This function accepts as input an iterator over the lines of a string, and bins the data
-/// into a 1 degree by 1 degree grid, saving the binned data in a HashMap
+/// into a <grid_size> degree by <grid_size> degree grid, saving the binned data in a HashMap
 pub fn generate_histograms( csv_records: &[ReadRecord], grid_size: &f64) -> Result<HashMap<String, HeightData>, Box<dyn Error>> {
     println!("Binning the csv records into a histogram...");
 
@@ -37,8 +37,6 @@ pub fn generate_histograms( csv_records: &[ReadRecord], grid_size: &f64) -> Resu
         let height = record.height;
 
         // Compute the grid cell coordinates for this observation
-        // let lon_center = GRID_SIZE * (longitude / GRID_SIZE).floor() + GRID_SIZE / 2.0;
-        // let lat_center = GRID_SIZE * (latitude / GRID_SIZE).floor() + GRID_SIZE / 2.0;
         let lon_center = grid_size * (longitude / grid_size).floor() + grid_size / 2.0;
         let lat_center = grid_size * (latitude / grid_size).floor() + grid_size / 2.0;
 

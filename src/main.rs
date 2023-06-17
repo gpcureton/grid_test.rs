@@ -1,5 +1,5 @@
-use std::println;
 use std::{
+    env,
     error::Error,
     collections::HashMap,
 };
@@ -28,23 +28,27 @@ use outputs::{writes as write_csv, WriteRecord};
 /// The main function
 fn main() -> Result<(), Box<dyn Error>> {
 
-    let args = args::args()?;
-
-    // let grid_size: f64 = 1.0;
+    let sys_args: Vec<String> = env::args().collect();
+    let args = args::args(&sys_args)?;
 
     let in_files: Vec<&String> = args.get_many("in_file").unwrap().collect();
-    println!("{in_files:?}");
     let out_file: &String = args.get_one("out_file").unwrap();
-    println!("{out_file:?}");
+    // let algorithm: &String = args.get_one("alg").unwrap();
     let grid_size: &f64 = args.get_one("grid_size").unwrap();
-    println!("{grid_size:?}");
 
+    // match algorithm.to_string() {
+    //     // "include_str" => 
+    //     // "csv" => 
+    //     "serde".to_string() => {
+    //         let csv_records: Vec<ReadRecord> = read_csv::read_using_csv_serde(&in_files, &MAX_RECORDS)?;
+    //     }
+    // }
     // // TODO: This should be a command line option
     // // let result = read_using_include_str()?;
     // // let result = read_using_csv()?;
     let csv_records: Vec<ReadRecord> = read_csv::read_using_csv_serde(&in_files, &MAX_RECORDS)?;
 
-    let grid_dict: HashMap<String, HeightData> = compute::generate_histograms(&csv_records, &grid_size)?;
+    let grid_dict: HashMap<String, HeightData> = compute::generate_histograms(&csv_records, grid_size)?;
 
     let output_records: Vec<WriteRecord> = compute::calc_stats(&grid_dict)?;
 
