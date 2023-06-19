@@ -13,19 +13,14 @@ use clap::{
 
 // #[derive(Debug)]
 // enum Algorithm {
-//     IncludeStr,
-//     Csv,
-//     Serde
+//     IncludeStr = "include_str",
+//     Csv = "csv",
+//     Serde = "serde"
 // }
 
-pub fn args(sys_args: &[String]) -> Result<ArgMatches, Box<dyn Error>> {
-    // println!("This is where we would sort out the args.");
-
-    // println!("Input arguments {sys_args:?}");
-
-    // TODO: Find any instances of -x or --expert, set is_expert to true, pop out the "expert" strings, them out replace them with a single instance of
-    //       --help, and pass the resulting vector to the args module.
-
+/// This method examines the input args from sys.args[] and determines
+/// whether the expert flag is set...
+pub fn is_expert(sys_args: &[String]) -> Result<bool, Box<dyn Error>> {
     let mut is_expert = false;
 
     let mut sys_args_list = sys_args.to_owned().split_off(1);
@@ -48,15 +43,15 @@ pub fn args(sys_args: &[String]) -> Result<ArgMatches, Box<dyn Error>> {
         sys_args_list.retain(|x| x != "-x" && x != "--expert");
     }
     sys_args_list.dedup();
-    // println!("Input arguments sans --expert and -x : {sys_args_list:?}");
 
-    // for (idx, argument) in sys_args_list.iter().enumerate() {
-    //     println!("Input argument {idx}: {argument}");
-    // }
+    Ok(is_expert)
+}
 
-    // println!("is_expert = {is_expert}");
+/// This function collects and handles the command line args using clap.
+pub fn args(sys_args: &[String]) -> Result<ArgMatches, Box<dyn Error>> {
+    // println!("Input arguments {sys_args:?}");
 
-    // let sys_args = sys_args_list;
+    let expert_args: bool = is_expert(sys_args)?;
 
     let cmd = Command::new("grid_test")
         .author("Geoff Cureton, geoff.cureton@ssec.wisc.edu")
@@ -107,11 +102,12 @@ pub fn args(sys_args: &[String]) -> Result<ArgMatches, Box<dyn Error>> {
                     .help("Read input file(s) using csv crate with manual destructuring"),
                 PossibleValue::new("serde")
                     .help("Read input file(s) using csv crate with serde deserialization")])
+                // TODO: Determine whether we can use enums for this...
                 // PossibleValue::new(Algorithm::IncludeStr).help("Read input file(s) using the include_str macro"),
                 // PossibleValue::new(Algorithm::Csv).help("Read input file(s) using csv crate with manual destructuring"),
                 // PossibleValue::new(Algorithm::Serde).help("Read input file(s) using csv crate with serde deserialization")])
             .default_value("serde")
-            .hide(!is_expert)
+            .hide(expert_args)
             .help("Algorithm to use for reading input csv file."))
         .arg(Arg::new("grid_size")
             .short('g')
@@ -129,12 +125,6 @@ pub fn args(sys_args: &[String]) -> Result<ArgMatches, Box<dyn Error>> {
             .action(ArgAction::SetTrue)
             .value_parser(clap::value_parser!(bool))
             .help("Display all help options, including the expert ones."));
-    // .get_matches();
-
-    // let value_parser = cmd.get_arguments()
-    //     .find(|a| a.get_id() == "grid_size").unwrap();
-    // .get_value_parser();
-    // println!("{value_parser:?}");
 
     Ok(cmd.get_matches())
 }

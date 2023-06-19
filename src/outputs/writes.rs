@@ -1,5 +1,5 @@
-use std::error::Error;
 use serde::Serialize;
+use std::error::Error;
 
 #[derive(Debug, Serialize, Clone, PartialEq)]
 #[serde(rename_all = "PascalCase")]
@@ -13,9 +13,12 @@ pub struct WriteRecord {
     pub stdev_height: f64,
 }
 
-/// This function accepts as input an iterator over the lines of a string, and bins the data
-/// into a 1 degree by 1 degree grid, saving the binned data in a HashMap
-pub fn write_csv_using_serde(csv_records: &Vec<WriteRecord>, out_file: &String) -> Result<(), Box<dyn Error>> {
+/// This function accepts as input a vector of WriteRecord structs, and an output filename,
+/// and serializes the vector to the output file.
+pub fn write_csv_using_serde(
+    csv_records: &Vec<WriteRecord>,
+    out_file: &String,
+) -> Result<(), Box<dyn Error>> {
     println!("Serializing the histogram data to file {out_file}...");
 
     let mut wtr = csv::Writer::from_path(out_file)?;
@@ -43,7 +46,7 @@ mod tests {
     /// This test checks that the struct attributes are the values
     /// they were defined as.
     fn writer_struct_test() {
-        let record = WriteRecord{
+        let record = WriteRecord {
             longitude: 100.0,
             latitude: 35.2,
             counts: 25,
@@ -64,8 +67,8 @@ mod tests {
     #[test]
     /// This test compares a struct with a clone of itself, which is possible
     /// as the struct derives the PartialEq trait
-    fn write_struct_equality(){
-        let record_1 = WriteRecord{
+    fn write_struct_equality() {
+        let record_1 = WriteRecord {
             longitude: 100.0,
             latitude: 35.2,
             counts: 25,

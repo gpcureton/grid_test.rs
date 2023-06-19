@@ -1,14 +1,11 @@
-use std::error::Error;
 use std::collections::HashMap;
+use std::error::Error;
 
 pub const GRID_SIZE: f64 = 1.0;
-// pub const GRID_SIZE: f64 = 0.25;
-// const MAX_RECORDS: usize = 500;
 pub const MAX_RECORDS: usize = 10_000_000;
-// const MAX_RECORDS: usize = std::usize::MAX;
 
-use crate::inputs::ReadRecord as ReadRecord;
-use crate::outputs::WriteRecord as WriteRecord;
+use crate::inputs::ReadRecord;
+use crate::outputs::WriteRecord;
 
 /// The HeightData struct holds binned observations of a gridcell
 /// Also stored is the number of observations for that gridcell
@@ -20,7 +17,10 @@ pub struct HeightData {
 
 /// This function accepts as input an iterator over the lines of a string, and bins the data
 /// into a <grid_size> degree by <grid_size> degree grid, saving the binned data in a HashMap
-pub fn generate_histograms( csv_records: &[ReadRecord], grid_size: &f64) -> Result<HashMap<String, HeightData>, Box<dyn Error>> {
+pub fn generate_histograms(
+    csv_records: &[ReadRecord],
+    grid_size: &f64,
+) -> Result<HashMap<String, HeightData>, Box<dyn Error>> {
     println!("Binning the csv records into a histogram...");
 
     // let mut idx = 0;
@@ -29,7 +29,6 @@ pub fn generate_histograms( csv_records: &[ReadRecord], grid_size: &f64) -> Resu
     let mut num_records: i64 = 0;
 
     for (_idx, record) in csv_records.iter().enumerate() {
-
         num_records += 1;
 
         let longitude = record.longitude;
@@ -66,7 +65,9 @@ pub fn generate_histograms( csv_records: &[ReadRecord], grid_size: &f64) -> Resu
 
 /// This function reads the contents of a HashMap, computes some statistics for each key,
 /// then writes the summary stats for the key (or grid cell) to a csv file.
-pub fn calc_stats(grid_dict: &HashMap<String, HeightData>) -> Result<Vec<WriteRecord>, Box<dyn Error>> {
+pub fn calc_stats(
+    grid_dict: &HashMap<String, HeightData>,
+) -> Result<Vec<WriteRecord>, Box<dyn Error>> {
     println!("Calculating the stats for each grid cell...");
 
     let unsorted_keys: Vec<String> = grid_dict.clone().into_keys().collect();
@@ -82,7 +83,6 @@ pub fn calc_stats(grid_dict: &HashMap<String, HeightData>) -> Result<Vec<WriteRe
     let mut csv_records: Vec<WriteRecord> = Vec::with_capacity(sorted_keys.len());
 
     for key in sorted_keys {
-
         let v: Vec<&str> = key.split(',').collect();
         let longitude = v[0].trim_matches('(').trim_matches(' ').parse::<f64>()?;
         let latitude = v[1].trim_matches(' ').trim_matches(')').parse::<f64>()?;
@@ -94,10 +94,7 @@ pub fn calc_stats(grid_dict: &HashMap<String, HeightData>) -> Result<Vec<WriteRe
 
         // let sum_heights: i64 = heights.iter().sum::<i64>();
         let sum_heights: i64 = heights.iter().sum();
-        let sum_squared_heights: i64 = heights
-            .iter()
-            .map(|x| (*x) * (*x))
-            .sum();
+        let sum_squared_heights: i64 = heights.iter().map(|x| (*x) * (*x)).sum();
 
         let mom_1: f64 = sum_heights as f64 / (*counts as f64);
         let mom_2: f64 = sum_squared_heights as f64 / (*counts as f64);
@@ -106,17 +103,15 @@ pub fn calc_stats(grid_dict: &HashMap<String, HeightData>) -> Result<Vec<WriteRe
         let mean_height: f64 = mom_1;
         let stdev_height: f64 = cum_2.sqrt();
 
-        csv_records.push(
-            WriteRecord {
-                longitude ,
-                latitude,
-                counts: *counts,
-                sum_heights,
-                sum_squared_heights,
-                mean_height,
-                stdev_height
-            }
-        );
+        csv_records.push(WriteRecord {
+            longitude,
+            latitude,
+            counts: *counts,
+            sum_heights,
+            sum_squared_heights,
+            mean_height,
+            stdev_height,
+        });
     }
 
     println!("Finished calculating the stats for each grid cell.");
