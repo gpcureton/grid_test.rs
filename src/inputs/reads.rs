@@ -1,4 +1,4 @@
-use std::error::Error;
+use std::{error::Error, path::PathBuf};
 // use csv::DeserializeError;
 use serde::Deserialize;
 
@@ -17,14 +17,15 @@ pub struct ReadRecord {
 /// Reads in a CSV file, using the csv crate and deserializing with serde crate.
 /// Returns Ok(Vec<ReadRecord>).
 pub fn read_using_csv_serde(
-    files: &Vec<&String>,
+    // files: &Vec<&String>,
+    files: &Vec<&PathBuf>,
     max_records: &usize,
 ) -> Result<Vec<ReadRecord>, Box<dyn Error>> {
     // let mut csv_records: Vec<ReadRecord> = Vec::new();
     let mut csv_records: Vec<ReadRecord> = Vec::with_capacity(MAX_RECORDS);
 
     for file_path in files {
-        println!("Reading the file '{file_path}' using csv crate with serde deserialization...");
+        log::info!("Reading the file '{file_path:?}' using csv crate with serde deserialization...");
 
         let mut num_records: i64 = 0;
 
@@ -39,7 +40,7 @@ pub fn read_using_csv_serde(
             let record: ReadRecord = result?;
 
             if num_records as usize > *max_records {
-                println!("Breaking at {}", num_records);
+                log::info!("Breaking at {}", num_records);
                 break;
             }
             num_records += 1;
@@ -47,12 +48,12 @@ pub fn read_using_csv_serde(
             csv_records.push(record);
         }
 
-        println!("\tFinished deserializing the csv file...");
-        println!("\tThere are {:?} entries in the csv file.\n", num_records);
+        log::info!("\tFinished deserializing the csv file...");
+        log::info!("\tThere are {:?} entries in the csv file.\n", num_records);
     }
 
-    println!("Finished reading the csv files...");
-    println!("There are {:?} total entries read.\n", csv_records.len());
+    log::info!("Finished reading the csv files...");
+    log::info!("There are {:?} total entries read.\n", csv_records.len());
 
     // Err("This is an error")?
     Ok(csv_records)
@@ -61,14 +62,15 @@ pub fn read_using_csv_serde(
 /// Reads in a CSV file, using the csv crate and manually deserializing.
 /// Returns Ok(Vec<ReadRecord>).
 pub fn read_using_csv(
-    files: &Vec<&String>,
+    // files: &Vec<&String>,
+    files: &Vec<&PathBuf>,
     max_records: &usize,
 ) -> Result<Vec<ReadRecord>, Box<dyn Error>> {
     // let mut csv_records: Vec<ReadRecord> = Vec::new();
     let mut csv_records: Vec<ReadRecord> = Vec::with_capacity(MAX_RECORDS);
 
     for file_path in files {
-        println!("Reading the file '{file_path}' using csv crate with manual destructuring...");
+        log::info!("Reading the file '{file_path:?}' using csv crate with manual destructuring...");
 
         let mut num_records: i64 = 0;
 
@@ -83,7 +85,7 @@ pub fn read_using_csv(
             let record = result?;
 
             if num_records as usize > *max_records {
-                println!("Breaking at {}", num_records);
+                log::info!("Breaking at {}", num_records);
                 break;
             }
             num_records += 1;
@@ -102,12 +104,12 @@ pub fn read_using_csv(
             csv_records.push(record);
         }
 
-        println!("Finished looping through the lines...");
-        println!("There are {:?} observations", num_records);
+        log::info!("Finished looping through the lines...");
+        log::info!("There are {:?} observations", num_records);
     }
 
-    println!("Finished reading the csv files...");
-    println!("There are {:?} total entries read.\n", csv_records.len());
+    log::info!("Finished reading the csv files...");
+    log::info!("There are {:?} total entries read.\n", csv_records.len());
 
     Ok(csv_records)
 }

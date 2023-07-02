@@ -21,7 +21,7 @@ pub fn generate_histograms(
     csv_records: &[ReadRecord],
     grid_size: &f64,
 ) -> Result<HashMap<String, HeightData>, Box<dyn Error>> {
-    println!("Binning the csv records into a histogram...");
+    log::info!("Binning the csv records into a histogram...");
 
     // let mut idx = 0;
     let mut grid_dict: HashMap<String, HeightData> = HashMap::new();
@@ -57,8 +57,8 @@ pub fn generate_histograms(
                 heights: vec![height],
             });
     }
-    println!("Finished binning the csv records.");
-    println!("There are {:?} csv records\n", num_records);
+    log::info!("Finished binning the csv records.");
+    log::info!("There are {:?} csv records\n", num_records);
 
     Ok(grid_dict)
 }
@@ -68,14 +68,14 @@ pub fn generate_histograms(
 pub fn calc_stats(
     grid_dict: &HashMap<String, HeightData>,
 ) -> Result<Vec<WriteRecord>, Box<dyn Error>> {
-    println!("Calculating the stats for each grid cell...");
+    log::info!("Calculating the stats for each grid cell...");
 
     let unsorted_keys: Vec<String> = grid_dict.clone().into_keys().collect();
     let mut sorted_keys = unsorted_keys.clone();
     sorted_keys.sort_unstable();
 
-    println!("There are {} unsorted keys...", unsorted_keys.len());
-    println!("There are {} sorted keys...", sorted_keys.len());
+    log::info!("There are {} unsorted keys...", unsorted_keys.len());
+    log::info!("There are {} sorted keys...", sorted_keys.len());
 
     let num_keys = sorted_keys.len();
 
@@ -114,8 +114,8 @@ pub fn calc_stats(
         });
     }
 
-    println!("Finished calculating the stats for each grid cell.");
-    println!("There are {:?} grid cells\n", num_keys);
+    log::info!("Finished calculating the stats for each grid cell.");
+    log::info!("There are {:?} grid cells\n", num_keys);
 
     Ok(csv_records)
 }

@@ -1,5 +1,5 @@
 use serde::Serialize;
-use std::error::Error;
+use std::{error::Error, path::PathBuf};
 
 #[derive(Debug, Serialize, Clone, PartialEq)]
 #[serde(rename_all = "PascalCase")]
@@ -17,9 +17,10 @@ pub struct WriteRecord {
 /// and serializes the vector to the output file.
 pub fn write_csv_using_serde(
     csv_records: &Vec<WriteRecord>,
-    out_file: &String,
+    out_file: &PathBuf,
+    // out_file: &String,
 ) -> Result<(), Box<dyn Error>> {
-    println!("Serializing the histogram data to file {out_file}...");
+    log::info!("Serializing the histogram data to file {out_file:?}...");
 
     let mut wtr = csv::Writer::from_path(out_file)?;
 
@@ -32,8 +33,8 @@ pub fn write_csv_using_serde(
 
     wtr.flush()?;
 
-    println!("Finished serializing the histogram data to a csv file...");
-    println!("There are {:?} entries in the csv file.\n", num_grids_cells);
+    log::info!("Finished serializing the histogram data to a csv file...");
+    log::info!("There are {:?} entries in the csv file.\n", num_grids_cells);
 
     // Err("There was an error writing to the CSV file")?
     Ok(())

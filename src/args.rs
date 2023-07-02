@@ -1,5 +1,4 @@
-// use std:: error::Error;
-use std::error::Error;
+use std::{error::Error, path::PathBuf};
 
 use clap::{
     // arg,
@@ -13,7 +12,6 @@ use clap::{
 
 // #[derive(Debug)]
 // enum Algorithm {
-//     IncludeStr = "include_str",
 //     Csv = "csv",
 //     Serde = "serde"
 // }
@@ -34,7 +32,7 @@ pub fn is_expert(sys_args: &[String]) -> Result<bool, Box<dyn Error>> {
 
     // if (expert_long_idx != None) || (expert_short_idx != None) {
     if (expert_long_idx.is_some()) || (expert_short_idx.is_none()) {
-        // println!("We have an expert option!");
+        // log::info!("We have an expert option!");
         is_expert = true;
     }
 
@@ -49,9 +47,11 @@ pub fn is_expert(sys_args: &[String]) -> Result<bool, Box<dyn Error>> {
 
 /// This function collects and handles the command line args using clap.
 pub fn args(sys_args: &[String]) -> Result<ArgMatches, Box<dyn Error>> {
-    // println!("Input arguments {sys_args:?}");
+    // log::info!("Input arguments {sys_args:?}");
 
     let expert_args: bool = is_expert(sys_args)?;
+
+    log::info!("args::args initial sys_args are: {sys_args:?}");
 
     let cmd = Command::new("grid_test")
         .author("Geoff Cureton, geoff.cureton@ssec.wisc.edu")
@@ -69,6 +69,7 @@ pub fn args(sys_args: &[String]) -> Result<ArgMatches, Box<dyn Error>> {
             .value_name("FILE [FILE1, FILE2, ...]")
             .required(true)
             .action(ArgAction::Set)
+            .value_parser(clap::value_parser!(PathBuf))
             .num_args(1..)
             .help("Input csv file(s)."))
         .arg(Arg::new("out_file")
@@ -77,6 +78,7 @@ pub fn args(sys_args: &[String]) -> Result<ArgMatches, Box<dyn Error>> {
             .value_name("FILE")
             .required(true)
             .action(ArgAction::Set)
+            .value_parser(clap::value_parser!(PathBuf))
             .num_args(1)
             .help("Output csv file."))
         .arg(Arg::new("satellite")
@@ -84,6 +86,7 @@ pub fn args(sys_args: &[String]) -> Result<ArgMatches, Box<dyn Error>> {
             .value_name("SATELLITE")
             .required(false)
             .action(ArgAction::Set)
+            .hide(expert_args)
             .num_args(1)
             .value_parser([
                 PossibleValue::new("him8").help("Himawari-8"),
@@ -96,14 +99,11 @@ pub fn args(sys_args: &[String]) -> Result<ArgMatches, Box<dyn Error>> {
             .action(ArgAction::Set)
             .num_args(1)
             .value_parser([
-                PossibleValue::new("include_str")
-                    .help("Read input file(s) using the include_str macro"),
                 PossibleValue::new("csv")
                     .help("Read input file(s) using csv crate with manual destructuring"),
                 PossibleValue::new("serde")
                     .help("Read input file(s) using csv crate with serde deserialization")])
                 // TODO: Determine whether we can use enums for this...
-                // PossibleValue::new(Algorithm::IncludeStr).help("Read input file(s) using the include_str macro"),
                 // PossibleValue::new(Algorithm::Csv).help("Read input file(s) using csv crate with manual destructuring"),
                 // PossibleValue::new(Algorithm::Serde).help("Read input file(s) using csv crate with serde deserialization")])
             .default_value("serde")
@@ -117,8 +117,27 @@ pub fn args(sys_args: &[String]) -> Result<ArgMatches, Box<dyn Error>> {
             .action(ArgAction::Set)
             .value_parser(clap::value_parser!(f64))
             .default_value("1.0")
+            .hide(expert_args)
             .allow_negative_numbers(false)
             .help("Longitude/Latitude grid size in degrees."))
+        .arg(Arg::new("verbosity")
+            .short('v')
+            .long("verbosity")
+            .action(ArgAction::Count)
+            .value_parser(clap::value_parser!(u8))
+            // .default_value("2")
+            .help("Each occurrence increases verbosity 1 level from ERROR: -v=WARNING, -vv=INFO, -vvv=DEBUG"))
+        .arg(Arg::new("log_file")
+            .short('l')
+            .long("logfile")
+            .value_name("FILE")
+            .required(false)
+            .action(ArgAction::Set)
+            .value_parser(clap::value_parser!(PathBuf))
+            .num_args(1)
+            // .default_value("grid_test.log")
+            .hide(expert_args)
+            .help("Output log file."))
         .arg(Arg::new("expert")
             .short('x')
             .long("expert")

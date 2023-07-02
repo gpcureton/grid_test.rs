@@ -8,7 +8,7 @@ A todo-list if tasks which will be tried out in this repo include:
 - [ ] Manipulation of numeric arrays (like numpy arrays) (https://crates.io/crates/ndarray, https://crates.io/crates/nalgebra)
 - [x] Implementation of cli arg parsing using `clap` (https://crates.io/crates/clap)
 - [x] Project organization / modules
-- [ ] Logging
+- [x] Logging
 - [x] Testing
 - [ ] Error reporting
 - [ ] OO-like programming
