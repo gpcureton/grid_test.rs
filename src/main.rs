@@ -1,6 +1,7 @@
 use std::{collections::HashMap, env, error::Error, path::PathBuf};
-// use log::{debug, error, info, trace, warn};
-// use log;
+use glob::{glob, Pattern};
+use walkdir::WalkDir;
+// use std::result::Result;
 
 // Looks for code in src/lib.rs
 use data::config_logger;
@@ -41,6 +42,23 @@ fn main() -> Result<(), Box<dyn Error>> {
     // log::info!("main() Goes to stderr and file");
     // log::debug!("main() Goes to file only");
     // log::trace!("main() Goes to file only");
+
+    // TODO: Restrict path depth...
+    log::info!("Running the file glob...");
+    for entry in glob("data/**/*.csv").unwrap() {
+        match entry {
+            Ok(path) => log::info!("\t{:?}", path.display()),
+
+            // if the path matched but was unreadable,
+            // thereby preventing its contents from matching
+            Err(e) => log::info!("\t{:?}", e),
+        }
+    }
+    log::info!("Running the dir walk...");
+    const MAX_DIR_DEPTH: usize = 2;
+    for entry in WalkDir::new("data").min_depth(1).max_depth(MAX_DIR_DEPTH) {
+        log::info!("\twalkdir has path {:?}", entry?.path().display());
+    }
 
     let in_files: Vec<&PathBuf> = args.get_many("in_file").unwrap().collect();
     let out_file: &PathBuf = args.get_one("out_file").unwrap();
