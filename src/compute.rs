@@ -87,10 +87,8 @@ pub fn calc_stats(
         let longitude = v[0].trim_matches('(').trim_matches(' ').parse::<f64>()?;
         let latitude = v[1].trim_matches(' ').trim_matches(')').parse::<f64>()?;
 
-        // TODO: Figure out how to do this without cloning the data... need to use lifetimes
-        // in the struct defn.
-        let heights = &grid_dict.get(&key).unwrap().heights.clone();
-        let counts = &grid_dict.get(&key).unwrap().counts.clone();
+        let heights = &grid_dict.get(&key).unwrap().heights;
+        let counts = &grid_dict.get(&key).unwrap().counts;
 
         // let sum_heights: i64 = heights.iter().sum::<i64>();
         let sum_heights: i64 = heights.iter().sum();

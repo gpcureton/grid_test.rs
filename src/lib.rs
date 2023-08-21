@@ -34,9 +34,9 @@ pub fn config_logger(verbosity: &u8, log_file: Option<&PathBuf>) -> Result<Handl
         _ => my_index,
         // _ => verbosity.clone() as usize
     };
-    log::info!("my_index is {my_index}");
+    log::debug!("my_index is {my_index}");
     let level = levels[my_index];
-    log::info!("The level is {level}");
+    log::debug!("The level is {level}");
 
     // Figure out what to do with the log file...
     // TODO: Decide whether to have the default be a log file, or no log file.

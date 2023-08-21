@@ -1,5 +1,5 @@
 use std::{collections::HashMap, env, error::Error, path::PathBuf};
-use glob::{glob, Pattern};
+use glob::glob;
 use walkdir::WalkDir;
 // use std::result::Result;
 
@@ -26,13 +26,13 @@ use outputs::{writes as write_csv, WriteRecord};
 /// The main function
 fn main() -> Result<(), Box<dyn Error>> {
     let sys_args: Vec<String> = env::args().collect();
-    log::info!("Initial sys_args is: {sys_args:?}");
+    log::debug!("Initial sys_args is: {sys_args:?}");
     let args = args::args(&sys_args)?;
 
     let verbosity: &u8 = args.get_one("verbosity").unwrap();
     let log_file: Option<&PathBuf> = args.get_one("log_file");
 
-    log::info!("The verbosity is {verbosity}");
+    log::debug!("The verbosity is {verbosity}");
     log::info!("The input log filename is {log_file:?}");
 
     config_logger(verbosity, log_file)?;
@@ -44,20 +44,20 @@ fn main() -> Result<(), Box<dyn Error>> {
     // log::trace!("main() Goes to file only");
 
     // TODO: Restrict path depth...
-    log::info!("Running the file glob...");
+    log::debug!("Running the file glob...");
     for entry in glob("data/**/*.csv").unwrap() {
         match entry {
-            Ok(path) => log::info!("\t{:?}", path.display()),
+            Ok(path) => log::debug!("\t{:?}", path.display()),
 
             // if the path matched but was unreadable,
             // thereby preventing its contents from matching
-            Err(e) => log::info!("\t{:?}", e),
+            Err(e) => log::debug!("\t{:?}", e),
         }
     }
-    log::info!("Running the dir walk...");
+    log::debug!("Running the dir walk...");
     const MAX_DIR_DEPTH: usize = 2;
     for entry in WalkDir::new("data").min_depth(1).max_depth(MAX_DIR_DEPTH) {
-        log::info!("\twalkdir has path {:?}", entry?.path().display());
+        log::debug!("\twalkdir has path {:?}", entry?.path().display());
     }
 
     let in_files: Vec<&PathBuf> = args.get_many("in_file").unwrap().collect();
