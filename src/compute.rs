@@ -92,7 +92,8 @@ pub fn calc_stats(
 
         // let sum_heights: i64 = heights.iter().sum::<i64>();
         let sum_heights: i64 = heights.iter().sum();
-        let sum_squared_heights: i64 = heights.iter().map(|x| (*x) * (*x)).sum();
+        // let sum_squared_heights: i64 = heights.iter().map(|x| (*x) * (*x)).sum();
+        let sum_squared_heights: i64 = heights.iter().map(|x| x * x).sum();
 
         let mom_1: f64 = sum_heights as f64 / (*counts as f64);
         let mom_2: f64 = sum_squared_heights as f64 / (*counts as f64);
